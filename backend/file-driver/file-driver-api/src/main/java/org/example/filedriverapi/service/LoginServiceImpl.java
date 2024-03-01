@@ -1,11 +1,13 @@
 package org.example.filedriverapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.filedriverapi.dto.JwtTokenDTO;
 import org.example.filedriverapi.dto.ResponseDTO;
 import org.example.filedriverapi.dto.ResultStatus;
 import org.example.filedriverapi.security.dto.CustomUserInfoDto;
 import org.example.filedriverapi.security.dto.LoginRequestDto;
 import org.example.filedriverapi.security.dto.RegisterRequestDto;
+import org.example.filedriverapi.security.exception.JwtTokenException;
 import org.example.filedriverapi.security.util.JwtUtil;
 import org.example.filedrivercore.entity.Member;
 import org.example.filedrivercore.enums.RoleType;
@@ -16,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -25,7 +29,7 @@ public class LoginServiceImpl implements LoginService {
     private final PasswordEncoder encoder;
 
     @Override
-    public String login(LoginRequestDto dto) {
+    public JwtTokenDTO login(LoginRequestDto dto) {
         String email = dto.getEmail();
         String password = dto.getPassword();
         Member member = memberRepository.findMemberByEmail(email);
@@ -46,7 +50,10 @@ public class LoginServiceImpl implements LoginService {
                 member.getRole()
         );
 
-        return jwtUtil.generateToken(userInfoDto);
+        return JwtTokenDTO.builder()
+                .accessToken(jwtUtil.generateAccessToken(userInfoDto))
+                .refreshToken(jwtUtil.generateRefreshToken(userInfoDto))
+                .build();
     }
 
     @Override
@@ -65,6 +72,34 @@ public class LoginServiceImpl implements LoginService {
             return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "이미 사용중인 이메일입니다."));
         }
         return new ResponseDTO<>(null, new ResultStatus(Boolean.TRUE, "1", "성공"));
+    }
+
+    @Override
+    public JwtTokenDTO newAccessToken(JwtTokenDTO dto) {
+        if (dto.getRefreshToken() == null || dto.getAccessToken() == null) {
+            throw new JwtTokenException(JwtTokenException.TOKEN_ERROR.UNACCEPTED);
+        }
+
+        // 리프레시 토큰이 만료되었는지 체크
+        String refreshToken = dto.getRefreshToken();
+        if (jwtUtil.validateToken(refreshToken)) {
+            // 정보 파싱
+            Map<String, Object> claims = jwtUtil.parseClaims(refreshToken);
+            CustomUserInfoDto customUserInfoDto = new CustomUserInfoDto();
+            customUserInfoDto.setMemberId(((Integer) claims.get("memberId")).longValue());
+            customUserInfoDto.setEmail((String) claims.get("email"));
+            customUserInfoDto.setRole(RoleType.valueOf((String) claims.get("role")));
+
+            // 신규 토큰 생성
+            String newAccessToken = jwtUtil.generateAccessToken(customUserInfoDto);
+            String newRefreshToken = jwtUtil.generateRefreshToken(customUserInfoDto);
+
+            return JwtTokenDTO.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+        }
+        return null;
     }
 
 }

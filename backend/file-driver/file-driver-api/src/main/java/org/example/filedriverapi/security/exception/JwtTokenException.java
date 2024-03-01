@@ -9,16 +9,16 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
-public class AccessTokenException extends RuntimeException {
+public class JwtTokenException extends RuntimeException {
 
     TOKEN_ERROR token_error;
 
     @Getter
     public enum TOKEN_ERROR {
         UNACCEPTED(401,"Token is null or too short"),
-        BADTYPE(401, "Token type Bearer"),
-        MALFORM(403, "Malformed Token"),
-//        BADSIGN(403, "Bad Signatured Token"),
+        BAD_TYPE(401, "Token type Bearer"),
+        MALFORMED(403, "Malformed Token"),
+        BAD_SIGN(403, "Bad Signatured Token"),
         UNSUPPORTED(403, "Unsupported JWT Token"),
         EXPIRED(403, "Expired Token");
 
@@ -29,25 +29,15 @@ public class AccessTokenException extends RuntimeException {
             this.status = status;
             this.msg = msg;
         }
-
     }
 
-    public AccessTokenException(TOKEN_ERROR error){
+    public JwtTokenException(TOKEN_ERROR error){
         super(error.name());
         this.token_error = error;
     }
 
-    public void sendResponseError(HttpServletResponse response){
-        response.setStatus(token_error.getStatus());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-        Gson gson = new Gson();
-        String responseStr = gson.toJson(Map.of("msg", token_error.getMsg(), "time", new Date()));
-
-        try {
-            response.getWriter().println(responseStr);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    public String getMessage() {
+        return "[" + token_error.getStatus() + "] " + token_error.getMsg();
     }
 }

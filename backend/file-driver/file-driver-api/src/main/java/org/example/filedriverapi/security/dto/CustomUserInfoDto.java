@@ -3,6 +3,7 @@ package org.example.filedriverapi.security.dto;
 import lombok.*;
 import org.example.filedrivercore.enums.RoleType;
 
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
