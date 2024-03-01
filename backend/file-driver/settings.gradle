@@ -1,3 +1,0 @@
-rootProject.name = 'file-driver'
-include 'file-driver-core'
-include 'file-driver-api'

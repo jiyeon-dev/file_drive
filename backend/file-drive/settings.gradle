@@ -1,0 +1,3 @@
+rootProject.name = 'file-drive'
+include 'file-drive-core'
+include 'file-drive-api'
