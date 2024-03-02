@@ -39,5 +39,8 @@ out/
 ### env ###
 .env
 
+### keys ###
+**/src/main/**/config/*.json
+
 ### test ###
 **/test

@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 @Slf4j
 @Component
-@PropertySource("classpath:application-api.yml")
+@PropertySource("classpath:application.yml")
 @RequiredArgsConstructor
 public class JwtUtil {
 

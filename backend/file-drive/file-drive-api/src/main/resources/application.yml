@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include:
+      - core
+
+expiration-minutes: 30
+refresh-expiration-hours: 24
+
+firebase:
+  configuration-file: config/firebase.json
+  bucket: file-drive-9f1a7.appspot.com

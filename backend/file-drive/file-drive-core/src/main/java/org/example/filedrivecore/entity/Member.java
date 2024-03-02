@@ -7,6 +7,7 @@ import org.example.filedrivecore.enums.RoleType;
 @Entity
 @Table(name = "Member")
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 public class Member {
@@ -25,6 +26,7 @@ public class Member {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private RoleType role;
 
