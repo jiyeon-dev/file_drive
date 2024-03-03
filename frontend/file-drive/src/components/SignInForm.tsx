@@ -11,21 +11,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginSchema, handler as doLogin } from "@/actions/auth/login";
+import { SignInSchema, handler as doLogin } from "@/actions/auth/signIn";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
+export default function SignInForm() {
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof SignInSchema>) => {
     const result = await doLogin(values);
     if (result) navigate("/");
   };

@@ -4,7 +4,7 @@ import { Response, Token } from "@/types";
 import AuthToken from "@/lib/authToken";
 
 // zod
-export const LoginSchema = z.object({
+export const SignInSchema = z.object({
   email: z
     .string()
     .min(1, { message: "이메일을 입력해주세요." })
@@ -13,7 +13,7 @@ export const LoginSchema = z.object({
 });
 
 export const handler = async (
-  data: z.infer<typeof LoginSchema>
+  data: z.infer<typeof SignInSchema>
 ): Promise<boolean> => {
   try {
     const response = await fetch("/api/auth/login", {
