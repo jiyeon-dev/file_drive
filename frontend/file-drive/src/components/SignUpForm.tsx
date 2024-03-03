@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate, Link } from "react-router-dom";
+import { SignUpSchema, handler as doLogin } from "@/actions/auth/signUp";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,23 +13,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginSchema, handler as doLogin } from "@/actions/auth/login";
-import { Link, useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
+export default function SignUpForm() {
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof SignUpSchema>>({
+    resolver: zodResolver(SignUpSchema),
     defaultValues: {
       email: "",
+      name: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof SignUpSchema>) => {
     const result = await doLogin(values);
-    if (result) navigate("/");
+    if (result) navigate("/signIn");
   };
 
   return (
@@ -50,6 +51,20 @@ export default function LoginForm() {
 
           <FormField
             control={form.control}
+            name='name'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>닉네임</FormLabel>
+                <FormControl>
+                  <Input placeholder='name' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name='password'
             render={({ field }) => (
               <FormItem>
@@ -63,13 +78,13 @@ export default function LoginForm() {
           />
 
           <Button type='submit' variant='primary' className='w-full'>
-            로그인
+            회원가입
           </Button>
         </form>
       </Form>
 
       <div className='flex justify-center mt-4 underline text-indigo-600'>
-        <Link to='/signUp'>회원가입</Link>
+        <Link to='/signIn'>로그인</Link>
       </div>
     </>
   );
