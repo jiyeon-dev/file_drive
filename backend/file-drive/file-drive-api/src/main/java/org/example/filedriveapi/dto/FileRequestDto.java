@@ -20,7 +20,8 @@ public class FileRequestDto {
     @Schema(name = "폴더 Id")
     private Integer folderId;
 
-    @Schema(name = "올린 사람 Id")
-    private Integer memberId;
+//    토큰에 저장되어 있으므로 굳이 필요 X
+//    @Schema(name = "올린 사람 Id")
+//    private Integer memberId;
 
 }

@@ -25,6 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
+            System.out.println(" authorizationHeader = " + authorizationHeader);
             String token = authorizationHeader.substring(7);
 
             // JWT 유효성 검증

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.filedriveapi.dto.FileRequestDto;
 import org.example.filedriveapi.dto.ResponseDTO;
 import org.example.filedriveapi.dto.ResultStatus;
+import org.example.filedriveapi.security.util.JwtUtil;
 import org.example.filedriveapi.util.FireStorage;
 import org.example.filedrivecore.entity.File;
 import org.example.filedrivecore.entity.Folder;
@@ -16,9 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,10 +37,12 @@ public class FileServiceImpl implements FileService {
         MultipartFile file = fileRequestDto.getFile();
         if (file.isEmpty()) return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "파일을 찾을 수 없습니다."));
         try {
-            String mediaLink = fireStorage.upload(file);
-            File newFile = fileRepository.save(dtoToEntity(fileRequestDto, mediaLink));
+            String filePath = fireStorage.upload(file);
+            File newFile = fileRepository.save(dtoToEntity(fileRequestDto, filePath));
             return new ResponseDTO<>(newFile, new ResultStatus(Boolean.TRUE, "1", "성공"));
-        } catch (IOException e) {
+        } catch (Exception e) {
+            // Transaction silently rolled back because it has been marked as rollback-only 핸들링
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "파일을 올리는 도중에 오류가 발생했습니다. \n" + e.getMessage()));
         }
     }
@@ -66,7 +69,8 @@ public class FileServiceImpl implements FileService {
 
         String fileName = file.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-        Long memberId = Long.valueOf(dto.getMemberId());
+
+        Long memberId = Long.valueOf(JwtUtil.getMemberId());
         Integer folderId = dto.getFolderId();
 
         return File.builder()

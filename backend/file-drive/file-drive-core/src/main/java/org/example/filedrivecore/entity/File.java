@@ -31,12 +31,12 @@ public class File {
     @Column(name = "link", nullable = false)
     private String link;
 
-    @ManyToOne
-    @JoinColumn(name = "memberId", insertable = false, updatable = false)
+    @ManyToOne(targetEntity = Member.class)
+    @JoinColumn(name = "memberId")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "folderId", insertable = false, updatable = false)
+    @ManyToOne(targetEntity = Folder.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "folderId")
     private Folder folder;
 
     @Column(name = "uploadedAt", nullable = false)

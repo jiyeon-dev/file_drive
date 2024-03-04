@@ -8,6 +8,8 @@ import org.example.filedriveapi.security.dto.CustomUserInfoDto;
 import org.example.filedriveapi.security.exception.JwtTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -69,6 +71,14 @@ public class JwtUtil {
      */
     public Long getUserId(String token) {
         return parseClaims(token).get("memberId", Long.class);
+    }
+
+    public static String getMemberId() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("No authentication information.");
+        }
+        return authentication.getName();
     }
 
     /**
