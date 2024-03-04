@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { toast } from "sonner";
-import { Response, Token } from "@/types";
-import AuthToken from "@/lib/authToken";
+import { Response } from "@/types";
 
 // zod
 export const SignUpSchema = z.object({

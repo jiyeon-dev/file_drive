@@ -6,6 +6,7 @@ const AuthToken = {
    * @param data 토큰
    */
   setToken: (data: Token) => {
+    AuthToken.removeTokenAll();
     sessionStorage.setItem(TokenType.ACCESS, data.accessToken);
     sessionStorage.setItem(TokenType.REFRESH, data.refreshToken);
   },

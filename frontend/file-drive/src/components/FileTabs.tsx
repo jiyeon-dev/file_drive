@@ -7,8 +7,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { GridIcon, RowsIcon } from "lucide-react";
+import DnDZone from "./DnDZone";
+import { useState } from "react";
 
 export default function FileTabs() {
+  const [type, setType] = useState<string>("all");
+
   return (
     <div>
       <Tabs defaultValue='grid'>
@@ -23,8 +27,8 @@ export default function FileTabs() {
           </TabsList>
 
           <div className='flex gap-2 items-center'>
-            <Select>
-              <SelectTrigger id='type-select' className='w-[180px]'>
+            <Select value={type} onValueChange={(type) => setType(type)}>
+              <SelectTrigger id='type-select' className='w-[120px]'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -37,8 +41,10 @@ export default function FileTabs() {
         {/* loading */}
         {/* placeholder */}
 
-        <TabsContent value='grid'>grid</TabsContent>
-        <TabsContent value='table'>table</TabsContent>
+        <DnDZone>
+          <TabsContent value='grid'>grid</TabsContent>
+          <TabsContent value='table'>table</TabsContent>
+        </DnDZone>
       </Tabs>
     </div>
   );
