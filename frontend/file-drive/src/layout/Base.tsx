@@ -8,7 +8,10 @@ export default function BaseLayout() {
     <>
       <Header />
       <Navigation />
-      <Outlet />
+
+      <main className='ml-12 p-4'>
+        <Outlet />
+      </main>
 
       <Toaster richColors position='top-center' />
     </>
