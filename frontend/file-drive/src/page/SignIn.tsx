@@ -1,6 +1,18 @@
+import { toast_id } from "@/actions/auth/signIn";
 import SignInForm from "@/components/SignInForm";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function SignInPage() {
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const errorParam = queryParams.get("error");
+
+    if (errorParam) {
+      toast.error(decodeURIComponent(errorParam), toast_id);
+    }
+  }, []);
+
   return (
     <>
       <div className='flex flex-col items-center'>

@@ -13,6 +13,8 @@ export const SignInSchema = z.object({
   password: z.string().min(6, { message: "6자 이상 입력해주세요." }),
 });
 
+export const toast_id = { id: "sign-in" };
+
 export const handler = async (
   data: z.infer<typeof SignInSchema>
 ): Promise<boolean> => {
@@ -30,11 +32,11 @@ export const handler = async (
       AuthToken.setToken(result.resultData);
       return true;
     } else {
-      toast.error(result.resultStatus.resultMessage, { id: "sign-in" });
+      toast.error(result.resultStatus.resultMessage, toast_id);
       return false;
     }
   } catch (e) {
-    toast.error(MESSAGE.E01, { id: "sign-in" });
+    toast.error(MESSAGE.E01, toast_id);
   }
   return false;
 };
