@@ -2,6 +2,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Response, Token } from "@/types";
 import AuthToken from "@/lib/authToken";
+import { MESSAGE } from "@/lib/message";
 
 // zod
 export const SignInSchema = z.object({
@@ -29,11 +30,11 @@ export const handler = async (
       AuthToken.setToken(result.resultData);
       return true;
     } else {
-      toast.error(result.resultStatus.resultMessage, { id: "login" });
+      toast.error(result.resultStatus.resultMessage, { id: "sign-in" });
       return false;
     }
   } catch (e) {
-    toast.error("알수없는 오류가 발생했습니다.", { id: "login" });
+    toast.error(MESSAGE.E01, { id: "sign-in" });
   }
   return false;
 };

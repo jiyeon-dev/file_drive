@@ -1,18 +1,16 @@
 import { z } from "zod";
 import { toast } from "sonner";
 import { Response } from "@/types";
+import { MESSAGE } from "@/lib/message";
+import { SignInSchema } from "./signIn";
 
 // zod
 export const SignUpSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "이메일을 입력해주세요." })
-    .email({ message: "이메일 형식에 맞지 않습니다." }),
+  ...SignInSchema.shape,
   name: z
     .string()
     .min(1, { message: "닉네임을 입력해주세요." })
     .max(6, { message: "6자 이하로 입력해주세요." }),
-  password: z.string().min(6, { message: "6자 이상 입력해주세요." }),
 });
 
 export const handler = async (
@@ -35,7 +33,7 @@ export const handler = async (
       return false;
     }
   } catch (e) {
-    toast.error("알수없는 오류가 발생했습니다.", { id: "sign-up" });
+    toast.error(MESSAGE.E01, { id: "sign-up" });
   }
   return false;
 };
