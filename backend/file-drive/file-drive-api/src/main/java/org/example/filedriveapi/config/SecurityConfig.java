@@ -53,7 +53,7 @@ public class SecurityConfig {
                         (authorizeRequests) -> authorizeRequests
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
                                         "/api/test",
-                                        "/api/auth/**").permitAll()
+                                        "/api/auth/**", "/api/file/fileTypes").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // JWT 토큰 사용하기 위해 세션 사용 X

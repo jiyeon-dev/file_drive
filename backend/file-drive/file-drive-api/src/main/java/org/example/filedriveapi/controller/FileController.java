@@ -9,11 +9,13 @@ import org.example.filedriveapi.dto.ResponseDTO;
 import org.example.filedriveapi.dto.ResultStatus;
 import org.example.filedriveapi.service.FileService;
 import org.example.filedrivecore.entity.File;
+import org.example.filedrivecore.enums.FileType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "파일 관리 API", description = "파일 리스트 조회/업로드/삭제/저장")
 @RestController
@@ -49,6 +51,12 @@ public class FileController {
     @PostMapping
     public ResponseEntity<ResponseDTO<File>> save(FileRequestDto dto) {
         return new ResponseEntity<>(fileService.save(dto), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "파일 타입 리스트")
+    @GetMapping("/fileTypes")
+    public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getFileTypeList() {
+        return new ResponseEntity<>(new ResponseDTO<>(FileType.getFileTypes(), new ResultStatus()), HttpStatus.OK);
     }
 
 }
