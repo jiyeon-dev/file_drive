@@ -50,14 +50,14 @@ public class FileServiceImpl implements FileService {
     @Transactional(readOnly = true)
     @Override
     public List<FileResponseDto> getFiles(int pageNo, int folderId) {
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("updatedAt").descending());
-        return fileRepository.findAllByFolderId(0, pageable).map(FileResponseDto::from).getContent();
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
+        return fileRepository.findAllByFolderId(folderId, pageable).map(FileResponseDto::from).getContent();
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<FileResponseDto> getFilesByType(int pageNo, String type) {
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("updatedAt").descending());
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
         return fileRepository.findAllByType(FileType.valueOf(type), pageable).map(FileResponseDto::from).getContent();
     }
 
