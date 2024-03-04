@@ -9,7 +9,7 @@ export default function BaseLayout() {
       <Header />
       <Navigation />
 
-      <main className='ml-12 p-4'>
+      <main className='ml-12 px-4'>
         <Outlet />
       </main>
 

@@ -4,6 +4,7 @@ import AuthLayout from "./layout/Auth";
 import SignInPage from "./page/SignIn";
 import SignUpPage from "./page/SignUp";
 import MainPage from "./page/Main";
+import FilesPage from "./page/Files";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <MainPage />,
+      },
+      {
+        path: "files",
+        element: <FilesPage />,
       },
     ],
   },
