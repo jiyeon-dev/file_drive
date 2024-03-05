@@ -16,6 +16,7 @@ public enum FileType {
 //    UNKNOWN("unknown", "알 수 없음", Collections.emptyList())
     ;
 
+    @Getter
     private final String id;
     private final String name;
     @Getter
@@ -41,6 +42,15 @@ public enum FileType {
     public static FileType findByExtension(String extension) {
         for (FileType fileType : values()) {
             if (fileType.getExtensions().contains(extension.toLowerCase())) {
+                return fileType;
+            }
+        }
+        return null;
+    }
+
+    public static FileType findById(String id) {
+        for (FileType fileType : values()) {
+            if (fileType.getId().contains(id)) {
                 return fileType;
             }
         }

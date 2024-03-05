@@ -59,7 +59,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public Page<FileResponseDto> getFilesByType(int pageNo, String type) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByType(FileType.valueOf(type), pageable).map(FileResponseDto::from);
+        return fileRepository.findAllByType(FileType.findById(type), pageable).map(FileResponseDto::from);
     }
 
     private File dtoToEntity(FileRequestDto dto, String mediaLink) {
