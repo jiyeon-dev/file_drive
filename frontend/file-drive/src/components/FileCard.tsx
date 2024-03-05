@@ -5,11 +5,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ImageIcon } from "lucide-react";
+import {
+  BookTextIcon,
+  FileArchiveIcon,
+  FileAudioIcon,
+  FileTextIcon,
+  FileVideoIcon,
+  GanttChartIcon,
+  ImageIcon,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { File } from "@/types";
+import { File, FileType } from "@/types";
 import { formatRelative } from "date-fns";
-import { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { storage } from "@/lib/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
 
@@ -21,6 +29,16 @@ export default function FileCard({ file }: FileCardProps) {
   const [imgUrl, setImgUrl] = useState<string>("");
   const owner = file?.owner || {}; // 파일 소유주 정보
   const fileType = file.type;
+
+  const fileTypeIcons = {
+    DOCS: <BookTextIcon />,
+    PDF: <FileTextIcon />,
+    EXCEL: <GanttChartIcon />,
+    IMAGE: <ImageIcon />,
+    AUDIO: <FileAudioIcon />,
+    VIDEO: <FileVideoIcon />,
+    ZIP: <FileArchiveIcon />,
+  } as Record<FileType["id"], ReactNode>;
 
   /**
    * 다운로드 URL
@@ -44,15 +62,13 @@ export default function FileCard({ file }: FileCardProps) {
     <Card>
       <CardHeader className='relative p-4'>
         <CardTitle className='flex gap-2 text-base font-normal'>
-          <div className='flex justify-center'>
-            <ImageIcon />
-          </div>
+          <div className='flex justify-center'>{fileTypeIcons[fileType]}</div>
           {file.name}
         </CardTitle>
         <div className='absolute top-2 right-2'>옵션</div>
       </CardHeader>
-      <CardContent className='h-[200px] flex justify-center items-center'>
-        {file.type === "IMAGE" && (
+      <CardContent className='h-[200px] py-2 flex justify-center items-center'>
+        {file.type === "IMAGE" ? (
           <img
             alt={file.name}
             width='100%'
@@ -60,6 +76,8 @@ export default function FileCard({ file }: FileCardProps) {
             className='rounded-sm'
             loading='lazy'
           />
+        ) : (
+          wrapIconWithClass(fileTypeIcons[fileType], "w-20 h-20 stroke-1")
         )}
       </CardContent>
       <CardFooter className='flex justify-between p-4'>
@@ -78,3 +96,10 @@ export default function FileCard({ file }: FileCardProps) {
     </Card>
   );
 }
+
+const wrapIconWithClass = (icon: ReactNode, className: string) => {
+  if (React.isValidElement(icon)) {
+    return React.cloneElement(icon, { ...icon.props, className });
+  }
+  return icon;
+};
