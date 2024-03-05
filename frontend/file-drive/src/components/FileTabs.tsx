@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { GridIcon, RowsIcon } from "lucide-react";
+import { GridIcon, Loader2, RowsIcon } from "lucide-react";
 import DnDZone from "./DnDZone";
 import { useState } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { File, FileType, Page, Response } from "@/types";
 import { toast } from "sonner";
 import FileCard from "./FileCard";
 import { useLoaderData } from "react-router-dom";
+import Placeholder from "./Placeholder";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
@@ -43,6 +44,9 @@ export default function FileTabs() {
   if (isError) {
     toast.error(error.message, { id: "files" });
   }
+
+  // 데이터가 없는지 체크
+  const isEmpty = data?.pages[0].totalElements === 0;
 
   return (
     <div>
@@ -78,21 +82,27 @@ export default function FileTabs() {
         </div>
 
         {/* loading */}
-        {isFetching && <>Loading</>}
-        {/* placeholder */}
+        {isFetching && (
+          <div className='flex flex-col gap-8 w-full items-center mt-24'>
+            <Loader2 className='h-32 w-32 animate-spin text-indigo-500' />
+          </div>
+        )}
 
-        <DnDZone>
-          <TabsContent value='grid'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
-              {data?.pages.map((page) => {
-                return page.content.map((file: File) => (
-                  <FileCard key={file.id} file={file} />
-                ));
-              })}
-            </div>
-          </TabsContent>
-          <TabsContent value='table'>table</TabsContent>
-        </DnDZone>
+        {!isFetching && (
+          <DnDZone>
+            {isEmpty && <Placeholder />}
+            <TabsContent value='grid'>
+              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
+                {data?.pages.map((page) => {
+                  return page.content.map((file: File) => (
+                    <FileCard key={file.id} file={file} />
+                  ));
+                })}
+              </div>
+            </TabsContent>
+            <TabsContent value='table'>table</TabsContent>
+          </DnDZone>
+        )}
       </Tabs>
     </div>
   );

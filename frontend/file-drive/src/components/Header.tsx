@@ -1,6 +1,7 @@
 import { UploadCloudIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import UploadButton from "./UploadButton";
 
 export default function Header() {
   return (
@@ -18,9 +19,7 @@ export default function Header() {
         </Button>
       </div>
       <div className='flex items-center justify-end'>
-        <Button size='sm' className='break-keep'>
-          업로드
-        </Button>
+        <UploadButton />
       </div>
     </header>
   );
