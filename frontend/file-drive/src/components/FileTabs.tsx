@@ -6,9 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { GridIcon, Loader2, RowsIcon } from "lucide-react";
+import { GridIcon, RowsIcon } from "lucide-react";
 import DnDZone from "./DnDZone";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "@/lib/authFetch";
 import { File, FileType, Page, Response } from "@/types";
@@ -17,12 +17,16 @@ import FileCard from "./FileCard";
 import { useLoaderData } from "react-router-dom";
 import Placeholder from "./Placeholder";
 import useIntersectionObserver from "@/hook/useIntersectionObserver";
+import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
   const { fileTypes } = useLoaderData() as { fileTypes: FileType[] };
   const [type, setType] = useState<string>("all");
   const target = useRef<HTMLDivElement>(null);
+  const toggleLoading = useLoadingSpinner((state) => state.toggle);
+
+  console.log("file tabs");
 
   // 파일 타입 변경 이벤트
   const handleChangeFileType = (newType: string) => {
@@ -47,6 +51,11 @@ export default function FileTabs() {
   if (isError) {
     toast.error(error.message, { id: "files" });
   }
+
+  // 로딩 바
+  useEffect(() => {
+    toggleLoading(isFetching);
+  }, [isFetching]);
 
   useIntersectionObserver({
     root: null,
@@ -90,13 +99,6 @@ export default function FileTabs() {
             </Select>
           </div>
         </div>
-
-        {/* loading */}
-        {isFetching && (
-          <div className='flex flex-col gap-8 w-full items-center mt-24'>
-            <Loader2 className='h-32 w-32 animate-spin text-indigo-500' />
-          </div>
-        )}
 
         <DnDZone>
           {isEmpty && <Placeholder />}
