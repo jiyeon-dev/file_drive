@@ -1,4 +1,5 @@
 import { handler as fileUpload, toast_id } from "@/actions/file/upload";
+import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
 import { MESSAGE } from "@/lib/message";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -6,6 +7,7 @@ import { toast } from "sonner";
 
 export default function DnDZone({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
+  const toggleLoading = useLoadingSpinner((state) => state.toggle);
   const [dragOver, isDragOver] = useState(false);
 
   const dropHandler = async (e: React.DragEvent) => {
@@ -18,10 +20,12 @@ export default function DnDZone({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    toggleLoading(true);
     const result = await fileUpload({ file: files[0], folderId: 1 });
     if (result) {
       queryClient.invalidateQueries({ queryKey: ["files"] });
     }
+    toggleLoading(false);
   };
 
   const dragoverHandler = (e: React.DragEvent) => {
