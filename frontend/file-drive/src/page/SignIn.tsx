@@ -9,7 +9,7 @@ export default function SignInPage() {
     const errorParam = queryParams.get("error");
 
     if (errorParam) {
-      toast.error(decodeURIComponent(errorParam), toast_id);
+      setTimeout(() => toast.error(decodeURIComponent(errorParam), toast_id));
     }
   }, []);
 
