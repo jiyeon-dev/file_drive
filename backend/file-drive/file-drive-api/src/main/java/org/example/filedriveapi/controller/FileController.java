@@ -10,6 +10,7 @@ import org.example.filedriveapi.dto.ResultStatus;
 import org.example.filedriveapi.service.FileService;
 import org.example.filedrivecore.entity.File;
 import org.example.filedrivecore.enums.FileType;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,22 +29,22 @@ public class FileController {
     // /api/file?pageNo=0&folderId=1
     @Operation(summary = "전체 파일 조회")
     @GetMapping
-    public ResponseEntity<ResponseDTO<List<FileResponseDto>>> getFiles(
+    public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getFiles(
             @RequestParam(required = false, defaultValue = "0") int pageNo,
             @RequestParam(required = false, defaultValue = "1") int folderId
     ) {
-        List<FileResponseDto> files = fileService.getFiles(pageNo, folderId);
+        Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId);
         return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
     }
 
     // /api/file/{type}?pageNo=0
     @Operation(summary = "특정 유형 파일 조회")
     @GetMapping("/{type}")
-    public ResponseEntity<ResponseDTO<List<FileResponseDto>>> getFilesByType(
+    public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getFilesByType(
             @PathVariable String type,
             @RequestParam(required = false, defaultValue = "0") int pageNo
     ) {
-        List<FileResponseDto> files = fileService.getFilesByType(pageNo, type);
+        Page<FileResponseDto> files = fileService.getFilesByType(pageNo, type);
         return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
     }
 

@@ -10,6 +10,7 @@ import org.example.filedrivecore.entity.File;
 import org.example.filedrivecore.entity.Folder;
 import org.example.filedrivecore.entity.Member;
 import org.example.filedrivecore.enums.FileType;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.filedriveapi.dto.FileResponseDto;
 import org.example.filedrivecore.repository.FileRepository;
@@ -49,16 +50,16 @@ public class FileServiceImpl implements FileService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<FileResponseDto> getFiles(int pageNo, int folderId) {
+    public Page<FileResponseDto> getFiles(int pageNo, int folderId) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByFolderId(folderId, pageable).map(FileResponseDto::from).getContent();
+        return fileRepository.findAllByFolderId(folderId, pageable).map(FileResponseDto::from);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<FileResponseDto> getFilesByType(int pageNo, String type) {
+    public Page<FileResponseDto> getFilesByType(int pageNo, String type) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByType(FileType.valueOf(type), pageable).map(FileResponseDto::from).getContent();
+        return fileRepository.findAllByType(FileType.valueOf(type), pageable).map(FileResponseDto::from);
     }
 
     private File dtoToEntity(FileRequestDto dto, String mediaLink) {
