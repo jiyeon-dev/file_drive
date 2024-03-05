@@ -6,7 +6,7 @@ import AuthLayout from "./layout/Auth";
 import SignInPage from "./page/SignIn";
 import SignUpPage from "./page/SignUp";
 import MainPage from "./page/Main";
-import FilesPage from "./page/Files";
+import FilesPage, { loader as fileTypeLoader } from "./page/Files";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +34,7 @@ const router = createBrowserRouter([
       {
         path: "files",
         element: <FilesPage />,
+        loader: fileTypeLoader,
       },
     ],
   },

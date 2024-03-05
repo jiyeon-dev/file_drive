@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -10,20 +9,29 @@ import {
 import { GridIcon, RowsIcon } from "lucide-react";
 import DnDZone from "./DnDZone";
 import { useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "@/lib/authFetch";
-import { File, Page, Response } from "@/types";
+import { File, FileType, Page, Response } from "@/types";
 import { toast } from "sonner";
 import FileCard from "./FileCard";
+import { useLoaderData } from "react-router-dom";
 
 export default function FileTabs() {
+  const queryClient = useQueryClient();
+  const { fileTypes } = useLoaderData() as { fileTypes: FileType[] };
   const [type, setType] = useState<string>("all");
+
+  // 파일 타입 변경 이벤트
+  const handleChangeFileType = (newType: string) => {
+    queryClient.invalidateQueries({ queryKey: ["files"] });
+    setType(newType);
+  };
 
   // 파일/폴더 리스트 조회
   const { data, isError, error, isFetching } = useInfiniteQuery({
     initialPageParam: 0,
-    queryKey: ["files"],
-    queryFn: fetchFiles,
+    queryKey: ["files", { type }],
+    queryFn: ({ pageParam, queryKey }) => fetchFiles({ pageParam, queryKey }),
     getNextPageParam: (data) => {
       // 마지막 페이지가 아니면 페이지 번호 + 1
       if (data.last) return null;
@@ -31,8 +39,6 @@ export default function FileTabs() {
     },
     retry: 1,
   });
-
-  console.log(data);
 
   if (isError) {
     toast.error(error.message, { id: "files" });
@@ -52,12 +58,20 @@ export default function FileTabs() {
           </TabsList>
 
           <div className='flex gap-2 items-center'>
-            <Select value={type} onValueChange={(type) => setType(type)}>
-              <SelectTrigger id='type-select' className='w-[120px]'>
+            <Select
+              value={type}
+              onValueChange={(type) => handleChangeFileType(type)}
+            >
+              <SelectTrigger id='type-select' className='w-[150px]'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='all'>All</SelectItem>
+                <SelectItem value='all'>전체</SelectItem>
+                {fileTypes.map((type: FileType) => (
+                  <SelectItem key={type.id} value={type.id}>
+                    {type.value}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -89,9 +103,19 @@ export default function FileTabs() {
  * @param param0 페이지 번호
  * @returns
  */
-const fetchFiles = async ({ pageParam = 0 }: { pageParam: number }) => {
+const fetchFiles = async ({
+  pageParam = 0,
+  queryKey,
+}: {
+  pageParam: number;
+  queryKey: (string | { type: string })[];
+}) => {
+  const searchFileType =
+    typeof queryKey[1] === "object" ? queryKey[1].type : "all"; // 검색 조건 파일 타입
+  const fileTypeUrl = searchFileType === "all" ? "" : `/${searchFileType}`; // 파일 타입 URL 생성
+
   const response = await authFetch(
-    `/api/file?pageNo=${pageParam}&folderId=${1}`,
+    `/api/file${fileTypeUrl}?pageNo=${pageParam}&folderId=${1}`,
     {
       method: "GET",
       headers: {

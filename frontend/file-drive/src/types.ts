@@ -49,3 +49,8 @@ export interface Page<T> {
   first: boolean; // 첫 페이지인지
   last: true; // 마지막 페이지인지
 }
+
+export type FileType = {
+  id: string;
+  value: string;
+};
