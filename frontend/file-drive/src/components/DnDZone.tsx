@@ -1,9 +1,11 @@
 import { handler as fileUpload, toast_id } from "@/actions/file/upload";
 import { MESSAGE } from "@/lib/message";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function DnDZone({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
   const [dragOver, isDragOver] = useState(false);
 
   const dropHandler = async (e: React.DragEvent) => {
@@ -18,7 +20,7 @@ export default function DnDZone({ children }: { children: React.ReactNode }) {
 
     const result = await fileUpload({ file: files[0], folderId: 1 });
     if (result) {
-      // TODO: tanstack 쿼리 재검색
+      queryClient.invalidateQueries({ queryKey: ["files"] });
     }
   };
 
