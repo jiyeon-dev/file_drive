@@ -38,8 +38,8 @@ export default function DnDZone({ children }: { children: React.ReactNode }) {
       onDrop={dropHandler}
       onDragOver={dragoverHandler}
       onDragLeave={dragLeaveHandler}
-      className={`my-2 border rounded-md px-2 ${
-        dragOver && "border-2 border-dashed border-blue-400"
+      className={`my-2 border rounded-md px-2 mb-2 overflow-x-auto ${
+        dragOver ? "border-2 border-dashed border-blue-400" : ""
       }`}
       style={{ height: "calc(100vh - 4rem - 56px - 16px)" }}
     >

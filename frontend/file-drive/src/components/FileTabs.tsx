@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { GridIcon, Loader2, RowsIcon } from "lucide-react";
 import DnDZone from "./DnDZone";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "@/lib/authFetch";
 import { File, FileType, Page, Response } from "@/types";
@@ -16,11 +16,13 @@ import { toast } from "sonner";
 import FileCard from "./FileCard";
 import { useLoaderData } from "react-router-dom";
 import Placeholder from "./Placeholder";
+import useIntersectionObserver from "@/hook/useIntersectionObserver";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
   const { fileTypes } = useLoaderData() as { fileTypes: FileType[] };
   const [type, setType] = useState<string>("all");
+  const target = useRef<HTMLDivElement>(null);
 
   // 파일 타입 변경 이벤트
   const handleChangeFileType = (newType: string) => {
@@ -29,21 +31,29 @@ export default function FileTabs() {
   };
 
   // 파일/폴더 리스트 조회
-  const { data, isError, error, isFetching } = useInfiniteQuery({
-    initialPageParam: 0,
-    queryKey: ["files", { type }],
-    queryFn: ({ pageParam, queryKey }) => fetchFiles({ pageParam, queryKey }),
-    getNextPageParam: (data) => {
-      // 마지막 페이지가 아니면 페이지 번호 + 1
-      if (data.last) return null;
-      else return data.number + 1;
-    },
-    retry: 1,
-  });
+  const { data, isError, error, isFetching, fetchNextPage, hasNextPage } =
+    useInfiniteQuery({
+      initialPageParam: 0,
+      queryKey: ["files", { type }],
+      queryFn: ({ pageParam, queryKey }) => fetchFiles({ pageParam, queryKey }),
+      getNextPageParam: (data) => {
+        // 마지막 페이지가 아니면 페이지 번호 + 1
+        if (data.last) return null;
+        else return data.number + 1;
+      },
+      retry: 1,
+    });
 
   if (isError) {
     toast.error(error.message, { id: "files" });
   }
+
+  useIntersectionObserver({
+    root: null,
+    target: target,
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage,
+  });
 
   // 데이터가 없는지 체크
   const isEmpty = data?.pages[0].totalElements === 0;
@@ -88,21 +98,23 @@ export default function FileTabs() {
           </div>
         )}
 
-        {!isFetching && (
-          <DnDZone>
-            {isEmpty && <Placeholder />}
-            <TabsContent value='grid'>
-              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
-                {data?.pages.map((page) => {
-                  return page.content.map((file: File) => (
-                    <FileCard key={file.id} file={file} />
-                  ));
-                })}
-              </div>
-            </TabsContent>
-            <TabsContent value='table'>table</TabsContent>
-          </DnDZone>
-        )}
+        <DnDZone>
+          {isEmpty && <Placeholder />}
+          <TabsContent value='grid' className='my-2'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
+              {data?.pages.map((page) => {
+                return page.content.map((file: File) => (
+                  <FileCard key={file.id} file={file} />
+                ));
+              })}
+            </div>
+            {hasNextPage && <div ref={target} />}
+          </TabsContent>
+          <TabsContent value='table' className='my-2'>
+            table
+            {hasNextPage && <div ref={target} />}
+          </TabsContent>
+        </DnDZone>
       </Tabs>
     </div>
   );

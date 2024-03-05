@@ -71,7 +71,7 @@ export default function FileCard({ file }: FileCardProps) {
         {file.type === "IMAGE" ? (
           <img
             alt={file.name}
-            width='100%'
+            width='200px'
             src={imgUrl}
             className='rounded-sm'
             loading='lazy'
