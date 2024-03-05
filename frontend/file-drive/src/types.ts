@@ -35,7 +35,17 @@ export type File = {
   name: string;
   type: string;
   link: string;
-  member: Member;
+  owner: Member;
   folder: Folder;
   uploadedAt: Date;
 };
+
+export interface Page<T> {
+  content: T[];
+  number: number; // 현재 페이지 번호
+  size: number; // 페이지 크기
+  totalElements: number; // 전체 데이터 수
+  totalPages: number; // 전체 페이지 수
+  first: boolean; // 첫 페이지인지
+  last: true; // 마지막 페이지인지
+}
