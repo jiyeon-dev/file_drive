@@ -1,7 +1,6 @@
 import { UploadCloudIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import UploadButton from "./UploadButton";
+import SearchForm from "./SearchForm";
 
 export default function Header() {
   return (
@@ -12,12 +11,7 @@ export default function Header() {
           FileDrive
         </h1>
       </div>
-      <div className='flex space-x-1 items-center'>
-        <Input placeholder='파일명'></Input>
-        <Button size='sm' className='break-keep'>
-          검색
-        </Button>
-      </div>
+      <SearchForm />
       <div className='flex items-center justify-end'>
         <UploadButton />
       </div>

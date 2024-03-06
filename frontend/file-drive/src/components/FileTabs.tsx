@@ -14,13 +14,14 @@ import { authFetch } from "@/lib/authFetch";
 import { File, FileType, Page, Response } from "@/types";
 import { toast } from "sonner";
 import FileCard from "./FileCard";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import Placeholder from "./Placeholder";
 import useIntersectionObserver from "@/hook/useIntersectionObserver";
 import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
   const { fileTypes } = useLoaderData() as { fileTypes: FileType[] };
   const [type, setType] = useState<string>("all");
   const target = useRef<HTMLDivElement>(null);
@@ -30,6 +31,7 @@ export default function FileTabs() {
 
   // 파일 타입 변경 이벤트
   const handleChangeFileType = (newType: string) => {
+    // TODO: URL Parameter로 넘겨야 할듯. Search 시 사용할 수 있도록...
     queryClient.invalidateQueries({ queryKey: ["files"] });
     setType(newType);
   };
@@ -38,7 +40,7 @@ export default function FileTabs() {
   const { data, isError, error, isFetching, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       initialPageParam: 0,
-      queryKey: ["files", { type }],
+      queryKey: ["files", Object.fromEntries(searchParams)],
       queryFn: ({ pageParam, queryKey }) => fetchFiles({ pageParam, queryKey }),
       getNextPageParam: (data) => {
         // 마지막 페이지가 아니면 페이지 번호 + 1
@@ -132,14 +134,23 @@ const fetchFiles = async ({
   queryKey,
 }: {
   pageParam: number;
-  queryKey: (string | { type: string })[];
+  queryKey: (string | { [key: string]: string })[];
 }) => {
-  const searchFileType =
-    typeof queryKey[1] === "object" ? queryKey[1].type : "all"; // 검색 조건 파일 타입
-  const fileTypeUrl = searchFileType === "all" ? "" : `/${searchFileType}`; // 파일 타입 URL 생성
+  let fileType,
+    searchTerm = "";
+  if (typeof queryKey[1] === "object") {
+    // 파일 타입 조건
+    if (!queryKey[1].type || queryKey[1].type === "all") fileType = "";
+    else fileType = `/${queryKey[1].type}`;
+
+    // 검색어 조건
+    if (!queryKey[1].searchTerm || queryKey[1].searchTerm === "")
+      searchTerm = "";
+    else searchTerm = "&searchTerm=" + queryKey[1].searchTerm;
+  }
 
   const response = await authFetch(
-    `/api/file${fileTypeUrl}?pageNo=${pageParam}&folderId=${1}`,
+    `/api/file${fileType}?pageNo=${pageParam}&folderId=${1}${searchTerm}`,
     {
       method: "GET",
       headers: {
