@@ -40,6 +40,7 @@ public class File {
     @JoinColumn(name = "folderId")
     private Folder folder;
 
+    @Setter
     @ColumnDefault("false")
     @Column(name = "isDelete", nullable = false)
     private Boolean isDelete;

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -74,6 +74,25 @@ public class FileServiceImpl implements FileService {
     public Page<FileResponseDto> getFilesByType(int pageNo, String type, String searchTerm) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
         return fileRepository.findAllByTypeAndNameContainingIgnoreCaseAndIsDeleteFalse(FileType.findById(type), searchTerm, pageable).map(FileResponseDto::from);
+    }
+
+    @Override
+    @Transactional
+    public ResponseDTO<Boolean> delete(Integer fileId, Boolean isDelete) {
+        try {
+            Optional<File> fileOptional = fileRepository.findById(Long.valueOf(fileId));
+            if (fileOptional.isEmpty()) {
+                return new ResponseDTO<>(false, new ResultStatus(Boolean.FALSE, "0", "파일을 찾을 수 없습니다."));
+            } else {
+                File file = fileOptional.get();
+                fileRepository.deleteFileById(file.getId(), isDelete);
+            }
+            return new ResponseDTO<>(true, new ResultStatus(Boolean.TRUE, "1", "파일이 삭제되었습니다."));
+        } catch (Exception e) {
+            // Transaction silently rolled back because it has been marked as rollback-only 핸들링
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "파일을 삭제하는 도중에 오류가 발생했습니다. \n" + e.getMessage()));
+        }
     }
 
     private File dtoToEntity(FileRequestDto dto, String mediaLink) {

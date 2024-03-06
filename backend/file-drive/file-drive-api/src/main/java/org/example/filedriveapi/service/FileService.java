@@ -18,4 +18,6 @@ public interface FileService {
 
     Page<FileResponseDto> getFilesByType(int pageNo, String type, String searchTerm);
 
+    ResponseDTO<Boolean> delete(Integer fileId, Boolean isDelete);
+
 }

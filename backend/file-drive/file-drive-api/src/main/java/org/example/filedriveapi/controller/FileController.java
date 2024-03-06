@@ -67,6 +67,12 @@ public class FileController {
         return new ResponseEntity<>(fileService.save(dto), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "파일 삭제")
+    @DeleteMapping
+    public ResponseEntity<ResponseDTO<Boolean>> delete(Integer fileId, Boolean isDelete) {
+        return new ResponseEntity<>(fileService.delete(fileId, isDelete), HttpStatus.CREATED);
+    }
+
     @Operation(summary = "파일 타입 리스트")
     @GetMapping("/fileTypes")
     public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getFileTypeList() {
