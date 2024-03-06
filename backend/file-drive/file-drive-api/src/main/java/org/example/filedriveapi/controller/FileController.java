@@ -26,15 +26,21 @@ public class FileController {
 
     private final FileService fileService;
 
-    // /api/file?pageNo=0&folderId=1
+    // /api/file?pageNo=0&folderId=1&searchTerm=
     @Operation(summary = "전체 파일 조회")
     @GetMapping
     public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getFiles(
             @RequestParam(required = false, defaultValue = "0") int pageNo,
-            @RequestParam(required = false, defaultValue = "1") int folderId
+            @RequestParam(required = false, defaultValue = "1") int folderId,
+            @RequestParam(required = false, defaultValue = "") String searchTerm
     ) {
-        Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId);
-        return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+        if (searchTerm.isEmpty()) {
+            Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId);
+            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+        } else {
+            Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId, searchTerm);
+            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+        }
     }
 
     // /api/file/{type}?pageNo=0

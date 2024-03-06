@@ -12,6 +12,8 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     Page<File> findAllByFolderId(Integer folder_id, Pageable pageable);
 
+    Page<File> findByFolderIdAndNameContaining(Integer folder_id, String name, Pageable pageable);
+
     Page<File> findAllByType(FileType type, Pageable pageable);
 
 }

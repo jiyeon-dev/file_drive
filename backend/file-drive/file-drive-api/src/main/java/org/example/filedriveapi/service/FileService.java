@@ -12,6 +12,8 @@ public interface FileService {
 
     Page<FileResponseDto> getFiles(int pageNo, int folderId);
 
+    Page<FileResponseDto> getFiles(int pageNo, int folderId, String searchTerm);
+
     Page<FileResponseDto> getFilesByType(int pageNo, String type);
 
 }
