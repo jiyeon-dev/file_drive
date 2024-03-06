@@ -48,10 +48,17 @@ public class FileController {
     @GetMapping("/{type}")
     public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getFilesByType(
             @PathVariable String type,
-            @RequestParam(required = false, defaultValue = "0") int pageNo
+            @RequestParam(required = false, defaultValue = "0") int pageNo,
+            @RequestParam(required = false, defaultValue = "") String searchTerm
     ) {
-        Page<FileResponseDto> files = fileService.getFilesByType(pageNo, type);
-        return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+        if (searchTerm.isEmpty()) {
+            Page<FileResponseDto> files = fileService.getFilesByType(pageNo, type);
+            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+        } else {
+            Page<FileResponseDto> files = fileService.getFilesByType(pageNo, type, searchTerm);
+            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+        }
+
     }
 
     @Operation(summary = "파일 업로드")

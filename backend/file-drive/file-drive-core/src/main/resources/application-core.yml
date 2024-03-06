@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:${MYSQL_PORT}/file_drive
+    url: jdbc:mysql://localhost:${MYSQL_PORT}/file_drive?useUnicode=yes&characterEncoding=utf8
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
   jpa:

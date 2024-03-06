@@ -16,4 +16,6 @@ public interface FileService {
 
     Page<FileResponseDto> getFilesByType(int pageNo, String type);
 
+    Page<FileResponseDto> getFilesByType(int pageNo, String type, String searchTerm);
+
 }
