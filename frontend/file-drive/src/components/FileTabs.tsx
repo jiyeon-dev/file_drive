@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { GridIcon, RowsIcon } from "lucide-react";
 import DnDZone from "./DnDZone";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "@/lib/authFetch";
 import { File, FileType, Page, Response } from "@/types";
@@ -21,19 +21,17 @@ import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { fileTypes } = useLoaderData() as { fileTypes: FileType[] };
-  const [type, setType] = useState<string>("all");
   const target = useRef<HTMLDivElement>(null);
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
-
-  console.log("file tabs");
+  const fileType = searchParams.get("type") || "all";
 
   // 파일 타입 변경 이벤트
   const handleChangeFileType = (newType: string) => {
-    // TODO: URL Parameter로 넘겨야 할듯. Search 시 사용할 수 있도록...
     queryClient.invalidateQueries({ queryKey: ["files"] });
-    setType(newType);
+    searchParams.set("type", newType);
+    setSearchParams(searchParams.toString());
   };
 
   // 파일/폴더 리스트 조회
@@ -84,7 +82,7 @@ export default function FileTabs() {
 
           <div className='flex gap-2 items-center'>
             <Select
-              value={type}
+              value={fileType}
               onValueChange={(type) => handleChangeFileType(type)}
             >
               <SelectTrigger id='type-select' className='w-[150px]'>
@@ -154,7 +152,7 @@ const fetchFiles = async ({
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
       },
     }
   );
