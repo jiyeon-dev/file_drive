@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
 
-    Page<File> findAllByFolderId(Integer folder_id, Pageable pageable);
+    Page<File> findAllByFolderIdAndIsDeleteFalse(Integer folder_id, Pageable pageable);
 
-    Page<File> findByFolderIdAndNameContainingIgnoreCase(Integer folder_id, String name, Pageable pageable);
+    Page<File> findByFolderIdAndNameContainingIgnoreCaseAndIsDeleteFalse(Integer folder_id, String name, Pageable pageable);
 
-    Page<File> findAllByType(FileType type, Pageable pageable);
+    Page<File> findAllByTypeAndIsDeleteFalse(FileType type, Pageable pageable);
 
-    Page<File> findAllByTypeAndNameContainingIgnoreCase(FileType type, String name, Pageable pageable);
+    Page<File> findAllByTypeAndNameContainingIgnoreCaseAndIsDeleteFalse(FileType type, String name, Pageable pageable);
 }

@@ -3,6 +3,7 @@ package org.example.filedrivecore.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.filedrivecore.enums.FileType;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
 
@@ -38,6 +39,10 @@ public class File {
     @ManyToOne(targetEntity = Folder.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "folderId")
     private Folder folder;
+
+    @ColumnDefault("false")
+    @Column(name = "isDelete", nullable = false)
+    private Boolean isDelete;
 
     @Column(name = "uploadedAt", nullable = false)
     private Date uploadedAt;

@@ -52,28 +52,28 @@ public class FileServiceImpl implements FileService {
     @Override
     public Page<FileResponseDto> getFiles(int pageNo, int folderId) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByFolderId(folderId, pageable).map(FileResponseDto::from);
+        return fileRepository.findAllByFolderIdAndIsDeleteFalse(folderId, pageable).map(FileResponseDto::from);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<FileResponseDto> getFiles(int pageNo, int folderId, String searchTerm) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findByFolderIdAndNameContainingIgnoreCase(folderId, searchTerm, pageable).map(FileResponseDto::from);
+        return fileRepository.findByFolderIdAndNameContainingIgnoreCaseAndIsDeleteFalse(folderId, searchTerm, pageable).map(FileResponseDto::from);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<FileResponseDto> getFilesByType(int pageNo, String type) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByType(FileType.findById(type), pageable).map(FileResponseDto::from);
+        return fileRepository.findAllByTypeAndIsDeleteFalse(FileType.findById(type), pageable).map(FileResponseDto::from);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<FileResponseDto> getFilesByType(int pageNo, String type, String searchTerm) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByTypeAndNameContainingIgnoreCase(FileType.findById(type), searchTerm, pageable).map(FileResponseDto::from);
+        return fileRepository.findAllByTypeAndNameContainingIgnoreCaseAndIsDeleteFalse(FileType.findById(type), searchTerm, pageable).map(FileResponseDto::from);
     }
 
     private File dtoToEntity(FileRequestDto dto, String mediaLink) {
