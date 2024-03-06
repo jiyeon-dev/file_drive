@@ -73,6 +73,12 @@ public class FileController {
         return new ResponseEntity<>(fileService.delete(fileId, isDelete), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "파일 좋아요")
+    @PostMapping("/favorite")
+    public ResponseEntity<ResponseDTO<Boolean>> favorite(Integer fileId, Boolean isFavorite) {
+        return new ResponseEntity<>(fileService.favorite(fileId, isFavorite), HttpStatus.CREATED);
+    }
+
     @Operation(summary = "파일 타입 리스트")
     @GetMapping("/fileTypes")
     public ResponseEntity<ResponseDTO<List<Map<String, String>>>> getFileTypeList() {

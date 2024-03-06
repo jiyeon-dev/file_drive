@@ -6,10 +6,12 @@ import org.example.filedriveapi.dto.ResponseDTO;
 import org.example.filedriveapi.dto.ResultStatus;
 import org.example.filedriveapi.security.util.JwtUtil;
 import org.example.filedriveapi.util.FireStorage;
+import org.example.filedrivecore.entity.Favorite;
 import org.example.filedrivecore.entity.File;
 import org.example.filedrivecore.entity.Folder;
 import org.example.filedrivecore.entity.Member;
 import org.example.filedrivecore.enums.FileType;
+import org.example.filedrivecore.repository.FavoriteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.filedriveapi.dto.FileResponseDto;
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class FileServiceImpl implements FileService {
 
     private final FileRepository fileRepository;
+    private final FavoriteRepository favoriteRepository;
     private final FireStorage fireStorage;
 
     private static final Integer PAGE_SIZE = 10;
@@ -92,6 +95,29 @@ public class FileServiceImpl implements FileService {
             // Transaction silently rolled back because it has been marked as rollback-only 핸들링
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "파일을 삭제하는 도중에 오류가 발생했습니다. \n" + e.getMessage()));
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseDTO<Boolean> favorite(Integer fileId, Boolean isFavorite) {
+        try {
+            Long memberId = Long.valueOf(JwtUtil.getMemberId());
+            Member member = Member.builder().id(memberId).build();
+            File file = File.builder().id(Long.valueOf(fileId)).build();
+            if (isFavorite) {
+                Favorite favorite = Favorite.builder().member(member).file(file).build();
+                favoriteRepository.save(favorite);
+                return new ResponseDTO<>(true, new ResultStatus(Boolean.TRUE, "1", "파일이 (좋아요) 변경되었습니다."));
+            } else {
+                Favorite favorite = favoriteRepository.findFavoriteByMemberAndFile(member, file);
+                favoriteRepository.delete(favorite);
+                return new ResponseDTO<>(true, new ResultStatus(Boolean.TRUE, "1", "파일이 (싫어요) 변경되었습니다."));
+            }
+        } catch (Exception e) {
+            // Transaction silently rolled back because it has been marked as rollback-only 핸들링
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "파일을 (좋아요) 변경하는 도중에 오류가 발생했습니다. \n" + e.getMessage()));
         }
     }
 

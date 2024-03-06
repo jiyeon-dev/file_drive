@@ -20,4 +20,6 @@ public interface FileService {
 
     ResponseDTO<Boolean> delete(Integer fileId, Boolean isDelete);
 
+    ResponseDTO<Boolean> favorite(Integer fileId, Boolean isFavorite);
+
 }
