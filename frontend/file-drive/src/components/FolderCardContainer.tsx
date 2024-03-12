@@ -25,7 +25,7 @@ export function FolderCardContainer() {
     <>
       <div className='flex items-center justify-between'>
         {hasParentFolder && (
-          <Link to={`/files?folder=${parentId}`}>
+          <Link to={`/files?folderId=${parentId}`}>
             <Button variant='ghost'>
               <ArrowLeftCircleIcon />
             </Button>

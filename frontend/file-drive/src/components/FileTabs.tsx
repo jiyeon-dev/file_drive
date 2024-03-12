@@ -104,7 +104,6 @@ export default function FileTabs() {
         </div>
 
         <DnDZone>
-          {isEmpty && <Placeholder />}
           <TabsContent value='grid' className='my-2 space-y-2'>
             <MemoizedFolderCardContainer />
 
@@ -121,6 +120,7 @@ export default function FileTabs() {
             table
             {hasNextPage && <div ref={target} />}
           </TabsContent>
+          {isEmpty && <Placeholder />}
         </DnDZone>
       </Tabs>
     </div>
