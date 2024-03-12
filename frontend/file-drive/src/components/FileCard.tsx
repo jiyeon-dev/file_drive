@@ -60,7 +60,7 @@ export default function FileCard({ file }: FileCardProps) {
   }, []);
 
   return (
-    <Card>
+    <Card className='drag-none'>
       <CardHeader className='relative p-4'>
         <CardTitle className='flex gap-2 text-base font-normal'>
           <div className='flex justify-center'>{fileTypeIcons[fileType]}</div>
@@ -76,7 +76,7 @@ export default function FileCard({ file }: FileCardProps) {
             alt={file.name}
             width='200px'
             src={imgUrl}
-            className='rounded-sm'
+            className='rounded-sm drag-none'
             loading='lazy'
           />
         ) : (

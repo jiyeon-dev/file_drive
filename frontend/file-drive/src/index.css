@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .drag-none {
+    user-drag: none;
+    -webkit-user-drag: none;
+  }
+}
+
 html,
 body,
 #root,
