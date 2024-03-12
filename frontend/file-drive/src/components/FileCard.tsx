@@ -20,6 +20,7 @@ import { formatRelative } from "date-fns";
 import React, { ReactNode, useEffect, useState } from "react";
 import { storage } from "@/lib/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
+import CardActions from "./CardActions";
 
 interface FileCardProps {
   file: File;
@@ -65,7 +66,9 @@ export default function FileCard({ file }: FileCardProps) {
           <div className='flex justify-center'>{fileTypeIcons[fileType]}</div>
           {file.name}
         </CardTitle>
-        <div className='absolute top-2 right-2'>옵션</div>
+        <div className='absolute top-2 right-2'>
+          <CardActions file={file} />
+        </div>
       </CardHeader>
       <CardContent className='h-[200px] py-2 flex justify-center items-center'>
         {file.type === "IMAGE" ? (

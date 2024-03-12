@@ -37,7 +37,9 @@ export type File = {
   link: string;
   owner: Member;
   folder: Folder;
+  isDelete: boolean;
   uploadedAt: Date;
+  favorite: boolean;
 };
 
 export interface Page<T> {
