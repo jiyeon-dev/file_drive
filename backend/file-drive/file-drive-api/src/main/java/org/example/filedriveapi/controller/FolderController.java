@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.filedriveapi.dto.FileResponseDto;
+import org.example.filedriveapi.dto.FolderRequestDto;
 import org.example.filedriveapi.dto.ResponseDTO;
 import org.example.filedriveapi.dto.ResultStatus;
 import org.example.filedriveapi.service.FolderService;
@@ -40,6 +41,12 @@ public class FolderController {
     ) {
         List<Folder> folders = folderService.getFolders(folderId);
         return new ResponseEntity<>(new ResponseDTO<>(folders, new ResultStatus()), HttpStatus.OK);
+    }
+
+    @Operation(summary = "폴더 생성")
+    @PostMapping
+    public ResponseEntity<ResponseDTO<Folder>> save(FolderRequestDto dto) {
+        return new ResponseEntity<>(folderService.save(dto), HttpStatus.CREATED);
     }
 
     @Operation(summary = "폴더 삭제")

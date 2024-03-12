@@ -1,5 +1,6 @@
 package org.example.filedrivecore.repository;
 
+import org.example.filedrivecore.entity.File;
 import org.example.filedrivecore.entity.Folder;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

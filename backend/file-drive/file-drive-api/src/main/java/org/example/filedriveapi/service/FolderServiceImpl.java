@@ -1,15 +1,21 @@
 package org.example.filedriveapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.filedriveapi.dto.FileRequestDto;
+import org.example.filedriveapi.dto.FolderRequestDto;
 import org.example.filedriveapi.dto.ResponseDTO;
 import org.example.filedriveapi.dto.ResultStatus;
+import org.example.filedriveapi.security.util.JwtUtil;
 import org.example.filedrivecore.entity.File;
 import org.example.filedrivecore.entity.Folder;
+import org.example.filedrivecore.entity.Member;
+import org.example.filedrivecore.enums.FileType;
 import org.example.filedrivecore.repository.FileRepository;
 import org.example.filedrivecore.repository.FolderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +35,19 @@ public class FolderServiceImpl implements FolderService {
     @Override
     public List<Folder> getFolders(Integer folderId) {
         return folderRepository.findAllByParentId(folderId);
+    }
+
+    @Override
+    @Transactional
+    public ResponseDTO<Folder> save(FolderRequestDto dto) {
+        try {
+            Folder newFolder = folderRepository.save(dtoToEntity(dto));
+            return new ResponseDTO<>(newFolder, new ResultStatus(Boolean.TRUE, "1", "성공"));
+        } catch (Exception e) {
+            // Transaction silently rolled back because it has been marked as rollback-only 핸들링
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "폴더를 생성하는 도중에 오류가 발생했습니다. \n" + e.getMessage()));
+        }
     }
 
     @Override
@@ -53,5 +72,13 @@ public class FolderServiceImpl implements FolderService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", "폴더를 삭제하는 도중에 오류가 발생했습니다. \n" + e.getMessage()));
         }
+    }
+
+    private Folder dtoToEntity(FolderRequestDto dto) {
+        return Folder.builder()
+                .name(dto.getName())
+                .color(dto.getColor())
+                .parent(Folder.builder().id(dto.getFolderId()).build())
+                .build();
     }
 }
