@@ -34,7 +34,6 @@ export default function FolderDeleteDialog({
       folderId,
     });
     if (result) {
-      // TODO: folder 재 로드
       queryClient.invalidateQueries({ queryKey: ["files", "folders"] });
       setOpen(false);
     }

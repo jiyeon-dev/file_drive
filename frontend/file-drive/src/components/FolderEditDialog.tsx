@@ -28,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import { ColorResult, TwitterPicker } from "react-color";
 import { useSearchParams } from "react-router-dom";
 import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
+import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
 
 interface FolderEditDialog {
   folder?: Folder;
@@ -41,8 +43,9 @@ export default function FolderEditDialog({ folder }: FolderEditDialog) {
     toggle: state.toggle,
     isOpen: state.isOpen,
   }));
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
-  const folderId = (searchParams.get("folderId") || 1) as number;
+  const folderId = searchParams.get("folderId") || "1";
   const isCreateMode = !folder;
 
   const form = useForm<z.infer<typeof FolderCreateSchema>>({
@@ -53,6 +56,11 @@ export default function FolderEditDialog({ folder }: FolderEditDialog) {
     },
   });
 
+  const handleChangeName = (event: React.ChangeEvent) => {
+    const target = event.target as HTMLInputElement;
+    form.setValue("name", target.value);
+  };
+
   // 색상 변경
   const handleChangeColor = (color: ColorResult) => {
     form.setValue("color", color.hex);
@@ -62,8 +70,8 @@ export default function FolderEditDialog({ folder }: FolderEditDialog) {
   const onSubmit = async (values: z.infer<typeof FolderCreateSchema>) => {
     toggleLoading(true);
     const result = await createFolder(values);
-    // TODO: 폴더 리스트 초기화
     if (result) {
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
       toggle(false);
     }
     toggleLoading(false);
@@ -84,7 +92,7 @@ export default function FolderEditDialog({ folder }: FolderEditDialog) {
                 <FormItem>
                   <FormLabel>폴더명</FormLabel>
                   <FormControl>
-                    <Input placeholder='폴더명' {...field} />
+                    <Input placeholder='폴더명' onChange={handleChangeName} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,7 +117,7 @@ export default function FolderEditDialog({ folder }: FolderEditDialog) {
                 </FormItem>
               )}
             />
-            <input type='hidden' name='parent' value='1' />
+            <input type='hidden' name='parent' value={folderId} />
 
             <DialogFooter className='sm:justify-end mt-3'>
               <DialogClose asChild>

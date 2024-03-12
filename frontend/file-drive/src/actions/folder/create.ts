@@ -7,7 +7,7 @@ import { MESSAGE } from "@/lib/message";
 export const FolderCreateSchema = z.object({
   name: z.string(),
   color: z.string(),
-  parent: z.number(),
+  parent: z.string(),
 });
 
 export const toast_id = { id: "create_folder" };
@@ -20,7 +20,7 @@ export const handler = async (
   const formData = new FormData();
   formData.set("name", name);
   formData.set("color", color);
-  formData.set("folderId", `${parent}`);
+  formData.set("folderId", parent);
 
   try {
     const response = await authFetch("/api/folder", {

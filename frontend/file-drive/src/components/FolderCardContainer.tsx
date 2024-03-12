@@ -17,7 +17,7 @@ export function FolderCardContainer() {
   const parentId = folder?.parent?.id || 1;
 
   const { data } = useQuery({
-    queryKey: ["folder", { folderId }],
+    queryKey: ["folders", { folderId }],
     queryFn: ({ queryKey }) => fetchFolders({ queryKey }),
   });
 
