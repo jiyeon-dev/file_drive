@@ -11,18 +11,22 @@ import DnDZone from "./DnDZone";
 import { useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "@/lib/authFetch";
-import { File, FileType, Page, Response } from "@/types";
+import { File, FileType, Page, Response, Folder } from "@/types";
 import { toast } from "sonner";
 import FileCard from "./FileCard";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import Placeholder from "./Placeholder";
 import useIntersectionObserver from "@/hook/useIntersectionObserver";
 import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
+import FolderCard from "./FolderCard";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { fileTypes } = useLoaderData() as { fileTypes: FileType[] };
+  const { fileTypes, folders } = useLoaderData() as {
+    fileTypes: FileType[];
+    folders: Folder[];
+  };
   const target = useRef<HTMLDivElement>(null);
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
   const fileType = searchParams.get("type") || "all";
@@ -51,6 +55,8 @@ export default function FileTabs() {
   if (isError) {
     toast.error(error.message, { id: "files" });
   }
+
+  console.log(folders);
 
   // 로딩 바
   useEffect(() => {
@@ -102,7 +108,13 @@ export default function FileTabs() {
 
         <DnDZone>
           {isEmpty && <Placeholder />}
-          <TabsContent value='grid' className='my-2'>
+          <TabsContent value='grid' className='my-2 space-y-2'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
+              {folders.map((folder) => (
+                <FolderCard key={folder.id} folder={folder} />
+              ))}
+            </div>
+
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
               {data?.pages.map((page) => {
                 return page.content.map((file: File) => (
@@ -136,6 +148,7 @@ const fetchFiles = async ({
 }) => {
   let fileType,
     searchTerm = "";
+  let folderId = 1;
   if (typeof queryKey[1] === "object") {
     // 파일 타입 조건
     if (!queryKey[1].type || queryKey[1].type === "all") fileType = "";
@@ -145,10 +158,15 @@ const fetchFiles = async ({
     if (!queryKey[1].searchTerm || queryKey[1].searchTerm === "")
       searchTerm = "";
     else searchTerm = "&searchTerm=" + queryKey[1].searchTerm;
+
+    // 폴더 조건
+    if (queryKey[1].folderId) {
+      folderId = queryKey[1].folderId as unknown as number;
+    }
   }
 
   const response = await authFetch(
-    `/api/file${fileType}?pageNo=${pageParam}&folderId=${1}${searchTerm}`,
+    `/api/file${fileType}?pageNo=${pageParam}&folderId=${folderId}${searchTerm}`,
     {
       method: "GET",
       headers: {

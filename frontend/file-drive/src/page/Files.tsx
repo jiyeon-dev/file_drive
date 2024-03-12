@@ -1,5 +1,7 @@
 import FileTabs from "@/components/FileTabs";
-import { FileType, Response } from "@/types";
+import { authFetch } from "@/lib/authFetch";
+import { FileType, Folder, Response } from "@/types";
+import { defer } from "react-router-dom";
 
 export default function FilesPage() {
   return <FileTabs />;
@@ -16,7 +18,23 @@ const fetchFileTypes = async () => {
   }
 };
 
-export const loader = async () => {
-  const data = await fetchFileTypes();
-  return { fileTypes: data };
+const fetchFolders = async ({ folderId = 1 }) => {
+  try {
+    const response = await authFetch(`/api/folder?folderId=${folderId}`, {
+      method: "GET",
+    });
+    const result = (await response?.json()) as Response<Folder[]>;
+    return result.resultData;
+  } catch (e) {
+    return [];
+  }
+};
+
+export const loader = async ({ request }: { request: Request }) => {
+  const folderId = (new URL(request.url).searchParams.get("folderId") ||
+    1) as number;
+
+  const fileTypes = await fetchFileTypes();
+  const folders = await fetchFolders({ folderId });
+  return defer({ fileTypes, folders });
 };

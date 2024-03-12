@@ -3,9 +3,11 @@ import { handler as fileUpload } from "@/actions/file/upload";
 import { Button } from "./ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
+import { useSearchParams } from "react-router-dom";
 
 export default function UploadButton() {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
   const ref = useRef<HTMLInputElement>(null);
 
@@ -18,7 +20,8 @@ export default function UploadButton() {
     if (!target.files || target.files?.length === 0) return;
 
     toggleLoading(true);
-    const result = await fileUpload({ file: target.files[0], folderId: 1 });
+    const folderId = (searchParams.get("folderId") || 1) as number;
+    const result = await fileUpload({ file: target.files[0], folderId });
     if (result) {
       queryClient.invalidateQueries({ queryKey: ["files"] });
     }

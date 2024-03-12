@@ -3,12 +3,14 @@ import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
 import { MESSAGE } from "@/lib/message";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function DnDZone({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
   const [dragOver, isDragOver] = useState(false);
+  const [searchParams] = useSearchParams();
 
   const dropHandler = async (e: React.DragEvent) => {
     e.preventDefault();
@@ -21,7 +23,8 @@ export default function DnDZone({ children }: { children: React.ReactNode }) {
     }
 
     toggleLoading(true);
-    const result = await fileUpload({ file: files[0], folderId: 1 });
+    const folderId = (searchParams.get("folderId") || 1) as number;
+    const result = await fileUpload({ file: files[0], folderId });
     if (result) {
       queryClient.invalidateQueries({ queryKey: ["files"] });
     }

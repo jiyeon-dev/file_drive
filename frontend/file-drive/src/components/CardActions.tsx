@@ -32,8 +32,6 @@ export default function CardActions({ file }: CardActionsProps) {
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
   const [favorite, setFavorite] = useState(file.favorite || false);
 
-  console.log(file);
-
   // 파일 다운로드
   const download = async () => {
     if (!file.link) return;
