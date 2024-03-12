@@ -34,7 +34,8 @@ export default function FolderDeleteDialog({
       folderId,
     });
     if (result) {
-      queryClient.invalidateQueries({ queryKey: ["files", "folders"] });
+      queryClient.invalidateQueries({ queryKey: ["folders"] });
+      queryClient.invalidateQueries({ queryKey: ["files"] });
       setOpen(false);
     }
     toggleLoading(false);
