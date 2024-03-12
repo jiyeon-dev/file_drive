@@ -28,4 +28,8 @@ public interface FileRepository extends JpaRepository<File, Long> {
     @Query("UPDATE File f SET f.isDelete = :isDelete WHERE f.id = :fileId")
     int deleteFileById(@Param("fileId") Long fileId, @Param("isDelete") Boolean isDelete);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE File f SET f.folder.id = :newFolderId WHERE f.folder.id = :folderId")
+    int updateParentFolder(@Param("folderId") Integer folderId, @Param("newFolderId") Integer newFolderId);
 }
