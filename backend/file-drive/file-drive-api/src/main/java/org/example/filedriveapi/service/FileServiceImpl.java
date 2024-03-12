@@ -122,6 +122,12 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
+    public Page<FileResponseDto> getDeleteFiles(int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+        return fileRepository.findAllByIsDeleteTrue(pageable).map(FileResponseDto::from);
+    }
+
     private File dtoToEntity(FileRequestDto dto, String mediaLink) {
         MultipartFile file = dto.getFile();
         if (file.getOriginalFilename() == null) {

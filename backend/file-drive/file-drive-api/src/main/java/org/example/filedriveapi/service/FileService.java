@@ -22,4 +22,6 @@ public interface FileService {
 
     ResponseDTO<Boolean> favorite(Integer fileId, Boolean isFavorite);
 
+    Page<FileResponseDto> getDeleteFiles(int pageNo);
+
 }

@@ -85,5 +85,20 @@ public class FileController {
         return new ResponseEntity<>(new ResponseDTO<>(FileType.getFileTypes(), new ResultStatus()), HttpStatus.OK);
     }
 
+    @Operation(summary = "삭제된 파일 조회")
+    @GetMapping("/delete")
+    public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getDeleteFiles(
+            @RequestParam(required = false, defaultValue = "0") int pageNo
+    ) {
+        return new ResponseEntity<>(new ResponseDTO<>(fileService.getDeleteFiles(pageNo), new ResultStatus()), HttpStatus.OK);
+//        if (searchTerm.isEmpty()) {
+//            Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId);
+//            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+//        } else {
+//            Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId, searchTerm);
+//            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
+//        }
+    }
+
 }
 
