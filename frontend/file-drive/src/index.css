@@ -88,3 +88,10 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.twitter-picker {
+  width: 100% !important;
+  border: 1px solid hsl(var(--input)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  box-shadow: none !important;
+}

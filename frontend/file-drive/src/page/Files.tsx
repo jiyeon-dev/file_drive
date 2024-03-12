@@ -1,10 +1,16 @@
 import FileTabs from "@/components/FileTabs";
+import FolderEditDialog from "@/components/FolderEditDialog";
 import { authFetch } from "@/lib/authFetch";
 import { FileType, Folder, Response } from "@/types";
 import { defer } from "react-router-dom";
 
 export default function FilesPage() {
-  return <FileTabs />;
+  return (
+    <>
+      <FileTabs />
+      <FolderEditDialog />
+    </>
+  );
 }
 
 const fetchFileTypes = async () => {
