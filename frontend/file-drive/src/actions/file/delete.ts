@@ -30,11 +30,13 @@ export const handler = async (
     const result = (await response.json()) as Response<boolean>;
     if (!result.resultStatus.isSuccess) {
       console.error(result.resultStatus.resultMessage);
-      toast.error(MESSAGE.EF04, toast_id);
+      const message = isDelete ? MESSAGE.EF04 : MESSAGE.EF04_1;
+      toast.error(message, toast_id);
       return false;
     }
 
-    toast.success(MESSAGE.SF02, toast_id);
+    const message = isDelete ? MESSAGE.SF02 : MESSAGE.SF02_1;
+    toast.success(message, toast_id);
     return true;
   } catch (e) {
     return false;

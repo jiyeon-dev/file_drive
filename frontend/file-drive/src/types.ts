@@ -37,7 +37,7 @@ export type File = {
   link: string;
   owner: Member;
   folder: Folder;
-  isDelete: boolean;
+  delete: boolean;
   uploadedAt: Date;
   favorite: boolean;
 };

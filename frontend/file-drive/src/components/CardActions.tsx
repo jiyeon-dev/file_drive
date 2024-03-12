@@ -56,7 +56,7 @@ export default function CardActions({ file }: CardActionsProps) {
     toggleLoading(true);
     const result = await fileDelete({
       fileId: file.id,
-      isDelete: !file.isDelete,
+      isDelete: !file.delete,
     });
     if (result) {
       queryClient.invalidateQueries({ queryKey: ["files"] });

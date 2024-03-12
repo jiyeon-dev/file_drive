@@ -21,6 +21,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { storage } from "@/lib/firebase";
 import { getDownloadURL, ref } from "firebase/storage";
 import CardActions from "./CardActions";
+import TrashCardActions from "./TrashCardActions";
 
 interface FileCardProps {
   file: File;
@@ -59,6 +60,8 @@ export default function FileCard({ file }: FileCardProps) {
     }
   }, []);
 
+  console.log(file);
+
   return (
     <Card className='drag-none'>
       <CardHeader className='relative p-4'>
@@ -67,7 +70,11 @@ export default function FileCard({ file }: FileCardProps) {
           {file.name}
         </CardTitle>
         <div className='absolute top-2 right-2'>
-          <CardActions file={file} />
+          {file.delete ? (
+            <TrashCardActions file={file} />
+          ) : (
+            <CardActions file={file} />
+          )}
         </div>
       </CardHeader>
       <CardContent className='min-h-[200px] py-0.5 flex justify-center items-center'>

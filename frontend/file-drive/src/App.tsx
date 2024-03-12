@@ -6,7 +6,8 @@ import AuthLayout from "./layout/Auth";
 import SignInPage from "./page/SignIn";
 import SignUpPage from "./page/SignUp";
 import MainPage from "./page/Main";
-import FilesPage, { loader as fileTypeLoader } from "./page/Files";
+import FilesPage, { loader as filesLoader } from "./page/Files";
+import TrashPage, { loader as trashLoader } from "./page/Trash";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +35,12 @@ const router = createBrowserRouter([
       {
         path: "files",
         element: <FilesPage />,
-        loader: fileTypeLoader,
+        loader: filesLoader,
+      },
+      {
+        path: "trash",
+        element: <TrashPage />,
+        loader: trashLoader,
       },
     ],
   },
