@@ -30,6 +30,8 @@ public class FileResponseDto {
 
     private boolean isFavorite;
 
+    private boolean isDelete;
+
     public static FileResponseDto from(File file) {
         return FileResponseDto.builder()
                 .id(file.getId())
@@ -39,6 +41,7 @@ public class FileResponseDto {
                 .owner(file.getMember())
                 .uploadedAt(file.getUploadedAt())
                 .isFavorite(true)
+                .isDelete(file.getIsDelete())
                 .build();
     }
 
@@ -53,6 +56,7 @@ public class FileResponseDto {
                 .owner(file.getMember())
                 .uploadedAt(file.getUploadedAt())
                 .isFavorite(favorite)
+                .isDelete(file.getIsDelete())
                 .build();
     }
 

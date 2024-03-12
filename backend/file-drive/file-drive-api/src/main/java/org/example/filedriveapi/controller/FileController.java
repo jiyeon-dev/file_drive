@@ -91,13 +91,6 @@ public class FileController {
             @RequestParam(required = false, defaultValue = "0") int pageNo
     ) {
         return new ResponseEntity<>(new ResponseDTO<>(fileService.getDeleteFiles(pageNo), new ResultStatus()), HttpStatus.OK);
-//        if (searchTerm.isEmpty()) {
-//            Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId);
-//            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
-//        } else {
-//            Page<FileResponseDto> files = fileService.getFiles(pageNo, folderId, searchTerm);
-//            return new ResponseEntity<>(new ResponseDTO<>(files, new ResultStatus()), HttpStatus.OK);
-//        }
     }
 
 }
