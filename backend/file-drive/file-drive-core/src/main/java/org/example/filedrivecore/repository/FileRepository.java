@@ -33,6 +33,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
     @Query("UPDATE File f SET f.folder.id = :newFolderId WHERE f.folder.id = :folderId")
     int updateParentFolder(@Param("folderId") Integer folderId, @Param("newFolderId") Integer newFolderId);
 
-    Page<File> findAllByIsDeleteTrue(Pageable pageable);
+    Page<File> findAllByIsDeleteTrueAndNameContainingIgnoreCase(String name, Pageable pageable);
 
 }
