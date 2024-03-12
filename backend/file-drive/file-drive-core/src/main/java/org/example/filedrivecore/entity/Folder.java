@@ -1,5 +1,7 @@
 package org.example.filedrivecore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Folder")
 public class Folder {
 
@@ -33,6 +36,7 @@ public class Folder {
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     @Builder.Default
+    @JsonIgnore
     private List<Folder> child = new ArrayList<>();
 
     private Date createdAt;
