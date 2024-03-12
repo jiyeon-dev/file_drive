@@ -70,7 +70,7 @@ export default function FileCard({ file }: FileCardProps) {
           <CardActions file={file} />
         </div>
       </CardHeader>
-      <CardContent className='h-[200px] py-2 flex justify-center items-center'>
+      <CardContent className='min-h-[200px] py-0.5 flex justify-center items-center'>
         {file.type === "IMAGE" ? (
           <img
             alt={file.name}
