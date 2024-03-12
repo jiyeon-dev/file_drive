@@ -54,8 +54,9 @@ public class FileServiceImpl implements FileService {
     @Transactional(readOnly = true)
     @Override
     public Page<FileResponseDto> getFiles(int pageNo, int folderId) {
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by("uploadedAt").descending());
-        return fileRepository.findAllByFolderIdAndIsDeleteFalse(folderId, pageable).map(FileResponseDto::from);
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+        Long memberId = Long.valueOf(JwtUtil.getMemberId());
+        return fileRepository.findAllByFolderIdAndIsDeleteFalse(folderId, pageable).map((result) -> FileResponseDto.from(result, memberId));
     }
 
     @Transactional(readOnly = true)
@@ -139,6 +140,7 @@ public class FileServiceImpl implements FileService {
                 .link(mediaLink)
                 .folder(Folder.builder().id(folderId).build())
                 .type(FileType.findByExtension(ext))
+                .isDelete(false)
                 .build();
     }
 

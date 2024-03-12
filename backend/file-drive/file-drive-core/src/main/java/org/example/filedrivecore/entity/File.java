@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.filedrivecore.enums.FileType;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @EqualsAndHashCode  // Save 시 리턴
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,6 +50,9 @@ public class File {
 
     @Column(name = "uploadedAt", nullable = false)
     private Date uploadedAt;
+
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Favorite> favorites = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
