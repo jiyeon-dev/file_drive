@@ -11,21 +11,20 @@ import DnDZone from "./DnDZone";
 import { useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { authFetch } from "@/lib/authFetch";
-import { File, FileType, Page, Response, Folder } from "@/types";
+import { File, FileType, Page, Response } from "@/types";
 import { toast } from "sonner";
 import FileCard from "./FileCard";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import Placeholder from "./Placeholder";
 import useIntersectionObserver from "@/hook/useIntersectionObserver";
 import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
-import FolderCard from "./FolderCard";
+import { MemoizedFolderCardContainer } from "./FolderCardContainer";
 
 export default function FileTabs() {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { fileTypes, folders } = useLoaderData() as {
+  const { fileTypes } = useLoaderData() as {
     fileTypes: FileType[];
-    folders: Folder[];
   };
   const target = useRef<HTMLDivElement>(null);
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
@@ -55,8 +54,6 @@ export default function FileTabs() {
   if (isError) {
     toast.error(error.message, { id: "files" });
   }
-
-  console.log(folders);
 
   // 로딩 바
   useEffect(() => {
@@ -109,11 +106,7 @@ export default function FileTabs() {
         <DnDZone>
           {isEmpty && <Placeholder />}
           <TabsContent value='grid' className='my-2 space-y-2'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
-              {folders.map((folder) => (
-                <FolderCard key={folder.id} folder={folder} />
-              ))}
-            </div>
+            <MemoizedFolderCardContainer />
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
               {data?.pages.map((page) => {
