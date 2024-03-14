@@ -48,6 +48,7 @@ export default function CardActions({ file }: CardActionsProps) {
       isFavorite: !favorite,
     });
     setFavorite(!favorite);
+    queryClient.invalidateQueries({ queryKey: ["favorite"] });
     toggleLoading(false);
   };
 
@@ -60,6 +61,7 @@ export default function CardActions({ file }: CardActionsProps) {
     });
     if (result) {
       queryClient.invalidateQueries({ queryKey: ["files"] });
+      queryClient.invalidateQueries({ queryKey: ["favorite"] });
     }
     toggleLoading(false);
   };
@@ -92,12 +94,12 @@ export default function CardActions({ file }: CardActionsProps) {
           )}
         </DropdownMenuItem>
 
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           // onClick={download}
           className='flex gap-1 items-center cursor-pointer'
         >
           <FolderIcon className='w-4 h-4' /> 이동
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <DropdownMenuSeparator />
         <DropdownMenuItem

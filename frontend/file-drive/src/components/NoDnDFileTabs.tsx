@@ -11,7 +11,7 @@ import useIntersectionObserver from "@/hook/useIntersectionObserver";
 import { useLoadingSpinner } from "@/hook/useLoadingSpinner";
 import { useSearchParams } from "react-router-dom";
 
-export default function NoDnDFileTabs() {
+export default function NoDnDFileTabs({ type = "trash" }) {
   const target = useRef<HTMLDivElement>(null);
   const toggleLoading = useLoadingSpinner((state) => state.toggle);
   const [searchParams] = useSearchParams();
@@ -20,7 +20,7 @@ export default function NoDnDFileTabs() {
   const { data, isError, error, isFetching, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       initialPageParam: 0,
-      queryKey: ["trash", Object.fromEntries(searchParams)],
+      queryKey: [type, Object.fromEntries(searchParams)],
       queryFn: ({ pageParam, queryKey }) => fetchFiles({ pageParam, queryKey }),
       getNextPageParam: (data) => {
         // 마지막 페이지가 아니면 페이지 번호 + 1
@@ -88,7 +88,7 @@ export default function NoDnDFileTabs() {
 }
 
 /**
- * 삭제 파일 리스트 조회
+ * 삭제/좋아요 파일 리스트 조회
  * @param param0 페이지 번호
  * @returns
  */
@@ -106,9 +106,9 @@ const fetchFiles = async ({
       searchTerm = "";
     else searchTerm = "&searchTerm=" + queryKey[1].searchTerm;
   }
-
+  const type = queryKey[0];
   const response = await authFetch(
-    `/api/file/delete?pageNo=${pageParam}${searchTerm}`,
+    `/api/file/${type}?pageNo=${pageParam}${searchTerm}`,
     {
       method: "GET",
       headers: {

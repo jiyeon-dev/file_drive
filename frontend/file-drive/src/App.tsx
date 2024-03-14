@@ -8,6 +8,7 @@ import SignUpPage from "./page/SignUp";
 import MainPage from "./page/Main";
 import FilesPage, { loader as filesLoader } from "./page/Files";
 import TrashPage, { loader as trashLoader } from "./page/Trash";
+import FavoritesPage, { loader as favoriteLoader } from "./page/Favorites";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
         path: "trash",
         element: <TrashPage />,
         loader: trashLoader,
+      },
+      {
+        path: "favorites",
+        element: <FavoritesPage />,
+        loader: favoriteLoader,
       },
     ],
   },
