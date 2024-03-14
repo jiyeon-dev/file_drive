@@ -128,6 +128,13 @@ public class FileServiceImpl implements FileService {
         return fileRepository.findAllByIsDeleteTrueAndNameContainingIgnoreCase(searchTerm, pageable).map(FileResponseDto::from);
     }
 
+    @Override
+    public Page<FileResponseDto> getFavoriteFiles(String searchTerm, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
+        Long memberId = Long.valueOf(JwtUtil.getMemberId());
+        return fileRepository.findAllByIsDeleteFalseAndFavoritesMemberId(memberId, pageable).map(FileResponseDto::from);
+    }
+
     private File dtoToEntity(FileRequestDto dto, String mediaLink) {
         MultipartFile file = dto.getFile();
         if (file.getOriginalFilename() == null) {

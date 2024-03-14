@@ -94,5 +94,13 @@ public class FileController {
         return new ResponseEntity<>(new ResponseDTO<>(fileService.getTrashFiles(searchTerm, pageNo), new ResultStatus()), HttpStatus.OK);
     }
 
+    @Operation(summary = "좋아요한 파일 조회")
+    @GetMapping("/favorite")
+    public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getFavoriteFiles(
+            @RequestParam(required = false, defaultValue = "") String searchTerm,
+            @RequestParam(required = false, defaultValue = "0") int pageNo
+    ) {
+        return new ResponseEntity<>(new ResponseDTO<>(fileService.getFavoriteFiles(searchTerm, pageNo), new ResultStatus()), HttpStatus.OK);
+    }
 }
 

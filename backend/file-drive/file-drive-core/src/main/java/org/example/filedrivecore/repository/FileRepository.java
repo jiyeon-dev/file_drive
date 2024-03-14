@@ -35,4 +35,5 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     Page<File> findAllByIsDeleteTrueAndNameContainingIgnoreCase(String name, Pageable pageable);
 
+    Page<File> findAllByIsDeleteFalseAndFavoritesMemberId(Long member_id, Pageable pageable);
 }

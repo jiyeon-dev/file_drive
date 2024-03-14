@@ -24,4 +24,6 @@ public interface FileService {
 
     Page<FileResponseDto> getTrashFiles(String searchTerm, int pageNo);
 
+    Page<FileResponseDto> getFavoriteFiles(String searchTerm, int pageNo);
+
 }
