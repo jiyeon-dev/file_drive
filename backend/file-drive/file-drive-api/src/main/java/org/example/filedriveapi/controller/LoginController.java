@@ -10,6 +10,7 @@ import org.example.filedriveapi.dto.ResultStatus;
 import org.example.filedriveapi.security.dto.LoginRequestDto;
 import org.example.filedriveapi.security.dto.RegisterRequestDto;
 import org.example.filedriveapi.service.LoginService;
+import org.example.filedrivecore.entity.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,12 @@ public class LoginController {
         } catch (Exception e) {
             return new ResponseEntity<>(new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "0", e.getMessage())), HttpStatus.OK);
         }
+    }
+
+    @Operation(summary = "유저 정보 조회")
+    @GetMapping("/user")
+    public ResponseEntity<ResponseDTO<Member>> getUserInfo() {
+        return new ResponseEntity<>(loginService.getUser(), HttpStatus.OK);
     }
 
 }

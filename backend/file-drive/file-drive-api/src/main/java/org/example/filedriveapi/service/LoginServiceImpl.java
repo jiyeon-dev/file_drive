@@ -102,4 +102,15 @@ public class LoginServiceImpl implements LoginService {
         return null;
     }
 
+    @Override
+    public ResponseDTO<Member> getUser() {
+        try {
+            Long memberId = Long.valueOf(JwtUtil.getMemberId());
+            Member member = memberRepository.findMemberById(memberId);
+            return new ResponseDTO<>(member, new ResultStatus(Boolean.TRUE, "1", "성공"));
+        } catch (Exception e) {
+            return new ResponseDTO<>(null, new ResultStatus(Boolean.FALSE, "1", "실패"));
+        }
+    }
+
 }
