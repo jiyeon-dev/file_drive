@@ -123,7 +123,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Page<FileResponseDto> getDeleteFiles(String searchTerm, int pageNo) {
+    public Page<FileResponseDto> getTrashFiles(String searchTerm, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
         return fileRepository.findAllByIsDeleteTrueAndNameContainingIgnoreCase(searchTerm, pageable).map(FileResponseDto::from);
     }

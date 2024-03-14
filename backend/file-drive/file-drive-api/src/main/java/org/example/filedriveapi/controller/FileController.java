@@ -86,12 +86,12 @@ public class FileController {
     }
 
     @Operation(summary = "삭제된 파일 조회")
-    @GetMapping("/delete")
-    public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getDeleteFiles(
+    @GetMapping("/trash")
+    public ResponseEntity<ResponseDTO<Page<FileResponseDto>>> getTrashFiles(
             @RequestParam(required = false, defaultValue = "") String searchTerm,
             @RequestParam(required = false, defaultValue = "0") int pageNo
     ) {
-        return new ResponseEntity<>(new ResponseDTO<>(fileService.getDeleteFiles(searchTerm, pageNo), new ResultStatus()), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO<>(fileService.getTrashFiles(searchTerm, pageNo), new ResultStatus()), HttpStatus.OK);
     }
 
 }
